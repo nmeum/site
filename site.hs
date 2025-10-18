@@ -154,7 +154,6 @@ main = hakyll $ do
         notes <- loadAll tagsPattern >>= recentFirst
         let baseCtx = pageTitle <> sidebar <> defaultContext
             listCtx = pageTitle
-                <> constField "tag" (capitalize tagStr)
                 <> listField "notes" noteCtx (return notes)
                 <> defaultContext
 
