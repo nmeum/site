@@ -93,8 +93,13 @@ cacheIfExists key compiler = do
 
 ------------------------------------------------------------------------
 
+config :: Configuration
+config = defaultConfiguration
+  { deployCommand = "rsync --delete-excluded --progress -av _site/ \
+                     \magnesium:/var/www/htdocs/notes.8pit.net/" }
+
 main :: IO ()
-main = hakyll $ do
+main = hakyllWith config $ do
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
