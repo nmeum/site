@@ -21,10 +21,6 @@ import System.Environment (getProgName)
 toLower :: String -> String
 toLower = fmap Char.toLower
 
-captialize :: String -> String
-captialize "" = ""
-capitalize (x:xs) = Char.toUpper x : xs
-
 ------------------------------------------------------------------------
 
 -- Taken from https://github.com/dwarfmaster/website/blob/dd437a175c3172bc4ee5c24a0e19b6e60ac8ed7d/site.hs#L12
@@ -149,7 +145,7 @@ main = hakyll $ do
       route idRoute
       compile $ do
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
-        let pageTitle = constField "title" ("Tag: " ++ capitalize tagStr)
+        let pageTitle = constField "title" tagStr
 
         notes <- loadAll tagsPattern >>= recentFirst
         let baseCtx = pageTitle <> sidebar <> defaultContext
