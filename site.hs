@@ -125,6 +125,14 @@ main = hakyll $ do
         cacheIfExists (tagsMap tags) $ makeItem ""
           >>= loadAndApplyTemplate "templates/sidebar.html" tagAllCtx
 
+    match "index.html" $ do
+      route idRoute
+      compile $ do
+        sidebar <- constField "sidebar" <$> loadBody "sidebar"
+        pandocCompiler
+          >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
+          >>= relativizeUrls
+
     match "notes/*" $ do
       route $ setExtension "html"
       compile $ do
