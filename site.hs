@@ -1,21 +1,22 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ViewPatterns #-}
 
-import           Hakyll
+import Data.Binary (Binary)
 import qualified Data.Char as Char
 import qualified Data.Map as Map
+import Data.Typeable (Typeable)
+import Hakyll
 import Hakyll.Core.Compiler.Internal
-  ( compilerUnsafeIO,
+  ( compilerAsk,
+    compilerProvider,
+    compilerStore,
     compilerTellCacheHits,
     compilerTellDependencies,
-    compilerStore,
-    compilerAsk,
     compilerUnderlying,
-    compilerProvider )
+    compilerUnsafeIO,
+  )
 import qualified Hakyll.Core.Store as Store
-import           Data.Typeable                 (Typeable)
-import           Data.Binary                   (Binary)
-import           System.Environment            (getProgName)
+import System.Environment (getProgName)
 
 toLower :: String -> String
 toLower = fmap Char.toLower
