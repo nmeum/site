@@ -8,7 +8,6 @@ import Data.Typeable (Typeable)
 import Hakyll
 import Hakyll.Core.Compiler.Internal
   ( compilerAsk,
-    compilerProvider,
     compilerStore,
     compilerTellCacheHits,
     compilerTellDependencies,
@@ -44,7 +43,7 @@ tagsCtx tmap = listFieldWith "notes" noteCtx getPosts
   getPosts (itemBody -> (_,is)) = mapM load is
 
   countTag :: String -> Map.Map String [Identifier] -> Int
-  countTag tag map = maybe 0 length $ Map.lookup tag map
+  countTag tag tMap = maybe 0 length $ Map.lookup tag tMap
 
 --------------------------------------------------------------------------------
 
@@ -73,9 +72,8 @@ tagsCtx tmap = listFieldWith "notes" noteCtx getPosts
 -- [3]: https://github.com/jaspervdj/hakyll/issues/383#issuecomment-150836917
 cacheIfExists :: (Show k, Binary a, Typeable a) => k -> Compiler a -> Compiler a
 cacheIfExists key compiler = do
-    id'      <- compilerUnderlying <$> compilerAsk
-    store    <- compilerStore      <$> compilerAsk
-    provider <- compilerProvider   <$> compilerAsk
+    id'   <- compilerUnderlying <$> compilerAsk
+    store <- compilerStore      <$> compilerAsk
 
     let k = [show key, show id']
         go = compiler >>= \v -> v <$ compilerUnsafeIO (Store.set store k v)
@@ -123,7 +121,7 @@ main = hakyllWith config $ do
       deps <- makePatternDependency (fromGlob "notes/*")
       compile $ do
         compilerTellDependencies [deps]
-        cacheIfExists (tagsMap tags) $ makeItem ""
+        cacheIfExists (tagsMap tags) $ makeItem []
           >>= loadAndApplyTemplate "templates/sidebar.html" tagAllCtx
 
     match "index.html" $ do
@@ -159,7 +157,7 @@ main = hakyllWith config $ do
                 <> defaultContext
 
         notesMeta <- mapM getMetadata (map itemIdentifier notes)
-        cacheIfExists notesMeta $ makeItem ""
+        cacheIfExists notesMeta $ makeItem []
           >>= loadAndApplyTemplate "templates/notes.html" listCtx
           >>= loadAndApplyTemplate "templates/default.html" baseCtx
           >>= relativizeUrls
