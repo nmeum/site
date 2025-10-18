@@ -2,7 +2,7 @@
 {-# LANGUAGE ViewPatterns #-}
 
 import           Hakyll
-import Data.Char (toUpper)
+import qualified Data.Char as Char
 import qualified Data.Map as Map
 import Hakyll.Core.Compiler.Internal
   ( compilerUnsafeIO,
@@ -17,9 +17,12 @@ import           Data.Typeable                 (Typeable)
 import           Data.Binary                   (Binary)
 import           System.Environment            (getProgName)
 
+toLower :: String -> String
+toLower = fmap Char.toLower
+
 captialize :: String -> String
 captialize "" = ""
-capitalize (x:xs) = toUpper x : xs
+capitalize (x:xs) = Char.toUpper x : xs
 
 ------------------------------------------------------------------------
 
@@ -107,7 +110,7 @@ main = hakyll $ do
     -- on metadata (such as tags, categories or dates). To reduces unnecessary
     -- rebuilds because of post content (not metadata) changes, we build the
     -- sidebar separately with custom caching (see 'cacheIfExists') above.
-    tags <- buildTags "notes/*" (fromCapture "tags/*.html")
+    tags <- buildTags "notes/*" (fromCapture "tags/*.html" . toLower)
     create ["sidebar"] $ do
       let tagAllCtx =
             listField
