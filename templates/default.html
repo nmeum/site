@@ -12,19 +12,8 @@
 
 	<div class="content">
 		<aside>
-			<nav>
-				<ul>
-					$for(allTags)$
-						<li>
-							<a title="All pages tagged '$title$'." href=$url$>
-								$title$ ($count$)
-							</a>
-						</li>
-					$endfor$
-				</ul>
-			</nav>
+			$sidebar$
 		</aside>
-
 		<main>
 			$body$
 		</main>
