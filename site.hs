@@ -40,7 +40,7 @@ tagsCtx tmap = listFieldWith "notes" noteCtx getPosts
        <> metadataField
        <> urlField "url"
        <> pathField "path"
-       <> titleField "title"
+       <> field "title" (\(itemBody -> (t,_)) -> pure t)
        <> field "count" (\(itemBody -> (t,_)) -> pure (show $ countTag t tmap))
        <> missingField
  where
