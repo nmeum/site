@@ -93,7 +93,7 @@ cacheIfExists key compiler = do
 
 config :: Configuration
 config = defaultConfiguration
-  { deployCommand = "rsync --delete-excluded --progress -av _site/ \
+  { deployCommand = "rsync --delete-excluded --checksum --progress -av _site/ \
                      \magnesium:/var/www/htdocs/notes.8pit.net/" }
 
 main :: IO ()
