@@ -1,3 +1,4 @@
 * pandoc: support referencing tag pages using the `#tag` syntax used by zk
+* create symlinks for non-html ending to html endings to make zk note links work
 * fix the `watch` command when used in conjunction with links (bug in Hakyll)
 * make sure tag pages are regenerated when a new note is added
