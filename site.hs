@@ -168,7 +168,7 @@ main = hakyllWith config $ do
       route idRoute
       compile $ do
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
-        pandocCompiler -- This is not needed here
+        getResourceBody
           >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
           >>= relativizeUrls
 
