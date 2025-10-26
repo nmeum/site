@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ViewPatterns #-}
 
+import qualified Data.Text as T
 import Data.Binary (Binary)
 import qualified Data.Char as Char
 import qualified Data.Map as Map
@@ -16,6 +17,8 @@ import Hakyll.Core.Compiler.Internal
   )
 import qualified Hakyll.Core.Store as Store
 import System.Environment (getProgName)
+import Text.Pandoc.Walk (walk)
+import qualified Text.Pandoc as P
 
 toLower :: String -> String
 toLower = fmap Char.toLower
@@ -91,6 +94,43 @@ cacheIfExists key compiler = do
 
 ------------------------------------------------------------------------
 
+linkToTag :: T.Text -> P.Inline
+linkToTag name =
+  let desc = "All pages tagged '" `T.append` name `T.append` "'"
+      file = "tags/" `T.append` T.toLower name `T.append` ".html"
+    in P.Link ("", [], []) [P.Str name] (file, desc)
+
+pandocCompilerZk :: Compiler (Item String)
+pandocCompilerZk =
+  cached "pandocCompilerZk" $
+    pandocCompilerWithTransform
+      defaultHakyllReaderOptions
+      defaultHakyllWriterOptions
+      (walk transform)
+  where
+    transform :: P.Block -> P.Block
+    transform block = walk transformInlines block
+
+    -- TODO: rewrite this using a fold
+    transformInlines :: [P.Inline] -> [P.Inline]
+    transformInlines (i@(P.Str text) : ix) =
+      -- Implements support for tags using Bear's multi-word tag syntax.
+      --
+      -- See:
+      --   • https://github.com/zk-org/zk/blob/dev/docs/notes/tags.md>
+      --   • https://github.com/zk-org/zk/blob/v0.15.1/internal/adapter/markdown/extensions/tag.go#L79
+      case T.uncons text of
+        -- TODO: Might be easier to just use a regex here.
+        Just ('#', xs) ->
+          let tag = T.takeWhile (/= '#') xs
+              rst = T.drop (T.length tag + 1) xs
+           in [linkToTag tag, P.Str rst] ++ transformInlines ix
+        _ -> i : transformInlines ix
+    transformInlines (i : ix) = i : transformInlines ix
+    transformInlines [] = []
+
+------------------------------------------------------------------------
+
 config :: Configuration
 config = defaultConfiguration
   { deployCommand = "rsync --delete-excluded --checksum --progress -av _site/ \
@@ -128,7 +168,7 @@ main = hakyllWith config $ do
       route idRoute
       compile $ do
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
-        pandocCompiler
+        pandocCompiler -- This is not needed here
           >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
           >>= relativizeUrls
 
@@ -138,7 +178,7 @@ main = hakyllWith config $ do
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
         let postTags = tagsField "tags" tags
 
-        pandocCompiler
+        pandocCompilerZk
           >>= loadAndApplyTemplate "templates/note.html" (postTags <> noteCtx)
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
