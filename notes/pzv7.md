@@ -1,1 +1,0 @@
-/home/soeren/doc/zk-notebook/public/pzv7.md
