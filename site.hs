@@ -196,9 +196,14 @@ main = hakyllWith config $ do
                 <> listField "notes" noteCtx (return notes)
                 <> defaultContext
 
+        -- XXX: cache the notes.html file and leave it as is unless the metadata
+        -- of the posts on this page changed (i.e., cache it if the body changed).
         notesMeta <- mapM getMetadata (map itemIdentifier notes)
-        cacheIfExists notesMeta $ makeItem []
-          >>= loadAndApplyTemplate "templates/notes.html" listCtx
+        let notesItem =
+              cacheIfExists notesMeta $
+                makeItem [] >>= loadAndApplyTemplate "templates/notes.html" listCtx
+
+        notesItem
           >>= loadAndApplyTemplate "templates/default.html" baseCtx
           >>= relativizeUrls
 

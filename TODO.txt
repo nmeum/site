@@ -1,3 +1,6 @@
 * create symlinks for non-html ending to html endings to make zk note links work
-* make sure tag pages are regenerated when a new note is added
+* cache is a little bit of a hack, it only caches individual parts not the entire compilation step
+	* therefore, the files are always recreated nonetheless
+	* it would be could if we could explore allowing custom `resourceModified` functions in hakyll
+	* maybe we could enhance the identifier product type with a field for that
 * don't rebuild on `git status` with `watch`
