@@ -168,9 +168,10 @@ main = hakyllWith config $ do
       route idRoute
       compile $ do
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
-        getResourceBody
-          >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
-          >>= relativizeUrls
+        cached "index" $
+          getResourceBody
+            >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
+            >>= relativizeUrls
 
     match "notes/*" $ do
       route $ setExtension "html"
