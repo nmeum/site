@@ -17,6 +17,7 @@ import Hakyll.Core.Compiler.Internal
   )
 import qualified Hakyll.Core.Store as Store
 import System.Environment (getProgName)
+import System.FilePath (takeExtension, replaceExtension)
 import Text.Pandoc.Walk (walk)
 import qualified Text.Pandoc as P
 
@@ -99,6 +100,21 @@ linkToTag name =
   let desc = "All pages tagged '" `T.append` name `T.append` "'"
       file = "tags/" `T.append` T.toLower name `T.append` ".html"
     in P.Link ("", [], []) [P.Str name] (file, desc)
+
+-- Transform zk references to .md files to .html files.
+fixupNoteRefs :: Item String -> Compiler (Item String)
+fixupNoteRefs = pure . fmap (withUrls go)
+ where
+  go :: String -> String
+  go url
+    | isZkRef url = replaceExtension url ".html"
+    | otherwise = url
+
+  -- Returns true if the URL is a reference to another zk note.
+  isZkRef :: String -> Bool
+  isZkRef url =
+    let ext = takeExtension url
+      in not (isExternal url) && (ext == "" || ext == ".md")
 
 pandocCompilerZk :: Compiler (Item String)
 pandocCompilerZk =
@@ -183,6 +199,7 @@ main = hakyllWith config $ do
           >>= loadAndApplyTemplate "templates/note.html" (postTags <> noteCtx)
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
+          >>= fixupNoteRefs
           >>= relativizeUrls
 
     tagsRules tags $ \tagStr tagsPattern -> do

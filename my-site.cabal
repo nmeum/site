@@ -14,5 +14,6 @@ executable site
                   , pandoc
                   , pandoc-types
                   , text
+                  , filepath
   ghc-options:      -Wall -threaded -rtsopts -with-rtsopts=-N
   default-language: Haskell2010
