@@ -18,7 +18,7 @@ a { text-decoration: none; }
 .tag { text-transform: capitalize; }
 
 /* header and top bar */
-header a { text-decoration: none; color: inherit; }
+header a { color: inherit; }
 header h1 { background-color: var(--c-elem-bg); color: var(--c-elem-fg); border-bottom: 5px solid var(--c-elem-bd); font-weight: normal; padding: 0.25ex; font-size: 233%; }
 header h1 span { margin-left: 1em; font-size: 50%; font-style: italic; }
 header a:hover { text-decoration: none; }
@@ -28,15 +28,15 @@ aside { border-right: 1px solid var(--c-line); padding: 0; min-width: 16em; }
 nav ul { list-style-type: none; padding-left: 0; }
 nav li ul { padding-left: 0.6em; }
 nav a:before { content: "› "; }
-nav a { color: var(--c-elem-bg); display: block; font-weight: bold; padding: 0.25em 1ex 0.25em 2mm; text-decoration: none; }
-nav a:hover { color: var(--c-elem-fg); background-color: var(--c-elem-bg); border-left: black solid 0.2em; text-decoration: none; }
+nav a { color: var(--c-elem-bg); display: block; font-weight: bold; padding: 0.25em 1ex 0.25em 2mm; }
+nav a:hover { color: var(--c-elem-fg); background-color: var(--c-elem-bg); border-left: black solid 0.2em; }
 nav p { font-weight: bold; margin: 0 0 0.5em 2mm; padding: 1em 0 0 0; }
 
 /* main copy */
 .content { display: flex; flex-direction: row; flex-basis: 100%; }
 .metadata { font-style: italic; font-size: 90%; }
 .metadata a { text-decoration: none; }
-article a { text-decoration: underline; }
+main a { text-decoration: underline; }
 main { flex-basis: 55%; padding: 0.5ex 0 2vh 1vw; }
 main h1 { margin-top: 2vh; }
 main h1, main h2 { color: var(--c-elem-bg); font-weight: bold; }
