@@ -1,13 +1,13 @@
 /* colors inspired by Haddock’s linuwial.css */
 :root {
 	--c-high: #9e358f;
-	--c-emph: #b95ca6;
+	--c-high-light: #b95ca6;
 	--c-line: #ddd;
 	--c-back: #fefefe;
 
-	--c-head-fg: white;
-	--c-head-bg: #5e5184;
-	--c-head-bd: #453b61;
+	--c-elem-fg: white;
+	--c-elem-bg: #5e5184;
+	--c-elem-bd: #453b61;
 }
 
 html, body { display: flex; flex-direction: column; height: 100%; }
@@ -19,7 +19,7 @@ a { text-decoration: none; }
 
 /* header and top bar */
 header a { text-decoration: none; color: inherit; }
-header h1 { background-color: var(--c-head-bg); color: var(--c-head-fg); border-bottom: 5px solid var(--c-head-bd); font-weight: normal; padding: 0.25ex; font-size: 233%; }
+header h1 { background-color: var(--c-elem-bg); color: var(--c-elem-fg); border-bottom: 5px solid var(--c-elem-bd); font-weight: normal; padding: 0.25ex; font-size: 233%; }
 header h1 span { margin-left: 1em; font-size: 50%; font-style: italic; }
 header a:hover { text-decoration: none; }
 
@@ -27,8 +27,8 @@ header a:hover { text-decoration: none; }
 aside { border-right: 1px solid var(--c-line); padding: 0; min-width: 16em; }
 nav ul { list-style-type: circle; list-style-position: outside; padding-left: 0; }
 nav li ul { padding-left: 0.6em }
-nav a { color: var(--c-head-bg); display: block; font-weight: bold; padding: 0.25em 1ex 0.25em 2mm; text-decoration: none; }
-nav a:hover { color: var(--c-head-fg); background-color: var(--c-head-bg); border-left: black solid 0.2em; text-decoration: none; }
+nav a { color: var(--c-elem-bg); display: block; font-weight: bold; padding: 0.25em 1ex 0.25em 2mm; text-decoration: none; }
+nav a:hover { color: var(--c-elem-fg); background-color: var(--c-elem-bg); border-left: black solid 0.2em; text-decoration: none; }
 nav p { font-weight: bold; margin: 0 0 0.5em 2mm; padding: 1em 0 0 0; }
 
 /* main copy */
@@ -38,14 +38,14 @@ nav p { font-weight: bold; margin: 0 0 0.5em 2mm; padding: 1em 0 0 0; }
 article a { text-decoration: underline; }
 main { flex-basis: 55%; padding: 0.5ex 0 2vh 1vw; }
 main h1 { margin-top: 2vh; }
-main h1, main h2 { color: var(--c-head-bg); font-weight: bold; }
-main h3, main h4, main h5 { color: var(--c-head-bg); font-weight: bold; margin: 2em 0 0 0; }
-main h6, main h7, main h8 { color: var(--c-head-bg); font-weight: bold; margin: 2em 0 0 0; }
+main h1, main h2 { color: var(--c-elem-bg); font-weight: bold; }
+main h3, main h4, main h5 { color: var(--c-elem-bg); font-weight: bold; margin: 2em 0 0 0; }
+main h6, main h7, main h8 { color: var(--c-elem-bg); font-weight: bold; margin: 2em 0 0 0; }
 main a { color: var(--c-high); }
-main a:hover { color: var(--c-emph); }
+main a:hover { color: var(--c-high-light); }
 
 /* footer */
-footer { color: var(--c-head-fg); background-color: var(--c-head-bg); margin-top: auto; }
+footer { color: var(--c-elem-fg); background-color: var(--c-elem-bg); margin-top: auto; }
 footer a { color: inherit; }
 footer a:hover { text-decoration: underline; }
 footer div { padding: 1em; }
