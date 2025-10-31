@@ -1,3 +1,4 @@
+* don't have two <h1>s on the same page
 * cache is a little bit of a hack, it only caches individual parts not the entire compilation step
 	* therefore, the files are always recreated nonetheless
 	* it would be could if we could explore allowing custom `resourceModified` functions in hakyll
