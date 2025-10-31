@@ -112,7 +112,6 @@ fixupNoteRefs = pure . fmap (withUrls go)
 
   -- Returns true if the URL is a reference to another zk note.
   isZkRef :: String -> Bool
-  isZkRef "/" = False
   isZkRef url =
     let ext = takeExtension url
       in not (isExternal url) && (ext == "" || ext == ".md")
@@ -197,10 +196,10 @@ main = hakyllWith config $ do
         let postTags = tagsField "tags" tags
 
         pandocCompilerZk
+          >>= fixupNoteRefs
           >>= loadAndApplyTemplate "templates/note.html" (postTags <> noteCtx)
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
-          >>= fixupNoteRefs
           >>= relativizeUrls
 
     tagsRules tags $ \tagStr tagsPattern -> do
