@@ -25,8 +25,9 @@ header a:hover { text-decoration: none; }
 
 /* sidebar */
 aside { border-right: 1px solid var(--c-line); padding: 0; min-width: 16em; }
-nav ul { list-style-type: circle; list-style-position: outside; padding-left: 0; }
-nav li ul { padding-left: 0.6em }
+nav ul { list-style-type: none; padding-left: 0; }
+nav li ul { padding-left: 0.6em; }
+nav a:before { content: "› "; }
 nav a { color: var(--c-elem-bg); display: block; font-weight: bold; padding: 0.25em 1ex 0.25em 2mm; text-decoration: none; }
 nav a:hover { color: var(--c-elem-fg); background-color: var(--c-elem-bg); border-left: black solid 0.2em; text-decoration: none; }
 nav p { font-weight: bold; margin: 0 0 0.5em 2mm; padding: 1em 0 0 0; }
