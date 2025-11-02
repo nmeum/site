@@ -4,9 +4,8 @@
 import qualified Data.Text as T
 import Data.Binary (Binary)
 import qualified Data.Char as Char
-import qualified Data.Map as Map
 import Data.Typeable (Typeable)
-import Hakyll
+import Hakyll hiding (renderTagList)
 import Hakyll.Core.Compiler.Internal
   ( compilerAsk,
     compilerStore,
@@ -20,34 +19,13 @@ import System.Environment (getProgName)
 import System.FilePath (takeExtension, replaceExtension)
 import Text.Pandoc.Walk (walk)
 import qualified Text.Pandoc as P
+import Text.Blaze.Html.Renderer.String (renderHtml)
+import qualified Text.Blaze.Html5 as H
+import qualified Text.Blaze.Html5.Attributes as A
+import Text.Blaze ((!))
 
 toLower :: String -> String
 toLower = fmap Char.toLower
-
-------------------------------------------------------------------------
-
--- Taken from https://github.com/dwarfmaster/website/blob/dd437a175c3172bc4ee5c24a0e19b6e60ac8ed7d/site.hs#L12
-
-getAllTags :: Tags -> Compiler [Item (String, [Identifier])]
-getAllTags tags = pure . map mkItem $ tagsMap tags
-  where
-    mkItem :: (String, [Identifier]) -> Item (String, [Identifier])
-    mkItem x@(t, _) = Item (tagsMakeId tags t) x
-
-tagsCtx :: Map.Map String [Identifier] -> Context (String,[Identifier])
-tagsCtx tmap = listFieldWith "notes" noteCtx getPosts
-       <> metadataField
-       <> urlField "url"
-       <> pathField "path"
-       <> field "title" (\(itemBody -> (t,_)) -> pure t)
-       <> field "count" (\(itemBody -> (t,_)) -> pure (show $ countTag t tmap))
-       <> missingField
- where
-  getPosts :: Item (String,[Identifier]) -> Compiler [Item String]
-  getPosts (itemBody -> (_,is)) = mapM load is
-
-  countTag :: String -> Map.Map String [Identifier] -> Int
-  countTag tag tMap = maybe 0 length $ Map.lookup tag tMap
 
 --------------------------------------------------------------------------------
 
@@ -152,6 +130,19 @@ config = defaultConfiguration
   { deployCommand = "rsync --delete-excluded --checksum --progress -av _site/ \
                      \magnesium:/var/www/htdocs/notes.8pit.net/" }
 
+-- Custom version of Hakyll's renderTagList.
+-- TODO: Maybe produce a Context here.
+renderTagList :: Tags -> Compiler (String)
+renderTagList = renderTags makeLink concat
+  where
+    makeLink tag url count _minCount _maxCount =
+      renderHtml . H.li
+        $ H.a
+          ! A.href (H.toValue url)
+          ! A.class_ "tag"
+          ! A.title ("Navigate posts by tag '" <> H.stringValue tag <> "'")
+        $ H.toHtml (tag ++ " (" ++ show count ++ ")")
+
 main :: IO ()
 main = hakyllWith config $ do
     match "images/*" $ do
@@ -163,22 +154,20 @@ main = hakyllWith config $ do
         compile compressCssCompiler
 
     -- Hakyll's dependency tracking does not work well with resources depending
-    -- on metadata (such as tags, categories or dates). To reduces unnecessary
-    -- rebuilds because of post content (not metadata) changes, we build the
-    -- sidebar separately with custom caching (see 'cacheIfExists') above.
+    -- on metadata (such as tags or dates). To reduces unnecessary rebuilds
+    -- because of post content (not metadata) changes, we build the sidebar
+    -- separately with custom caching (see 'cacheIfExists') above.
     tags <- buildTags "notes/*" (fromCapture "tags/*.html" . toLower)
     create ["sidebar"] $ do
-      let tagAllCtx =
-            listField
-              "allTags"
-              (tagsCtx $ Map.fromList (tagsMap tags))
-              (getAllTags tags)
-
       deps <- makePatternDependency (fromGlob "notes/*")
       compile $ do
+        -- XXX: renderTagList/renderTags does not tell dependencies itself.
+        -- https://github.com/jaspervdj/hakyll/blob/v4.16.7.1/lib/Hakyll/Web/Tags.hs#L183
         compilerTellDependencies [deps]
+
+        allTagsCtx <- constField "allTags" <$> renderTagList tags
         cacheIfExists (tagsMap tags) $ makeItem []
-          >>= loadAndApplyTemplate "templates/sidebar.html" tagAllCtx
+          >>= loadAndApplyTemplate "templates/sidebar.html" allTagsCtx
 
     match "index.html" $ do
       route idRoute

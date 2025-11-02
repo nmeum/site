@@ -9,7 +9,6 @@ executable site
                   , hakyll == 4.16.*
                   , blaze-html
                   , blaze-markup
-                  , containers
                   , binary
                   , pandoc
                   , pandoc-types
