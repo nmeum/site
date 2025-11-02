@@ -76,7 +76,7 @@ cacheIfExists key compiler = do
 linkToTag :: T.Text -> P.Inline
 linkToTag name =
   let desc = "All pages tagged '" `T.append` name `T.append` "'"
-      file = "tags/" `T.append` T.toLower name `T.append` ".html"
+      file = "/tags/" `T.append` T.toLower name `T.append` ".html"
     in P.Link ("", [], []) [P.Str name] (file, desc)
 
 -- Transform zk references to .md files to .html files.
