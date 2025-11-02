@@ -173,8 +173,7 @@ main = hakyllWith config $ do
       route idRoute
       compile $ do
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
-        cached "index" $
-          getResourceBody
+        (cached "index" $ getResourceBody)
             >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
             >>= relativizeUrls
 
