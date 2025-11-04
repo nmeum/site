@@ -54,7 +54,7 @@ pandocCompilerZk =
       (walk transform)
   where
     transform :: P.Block -> P.Block
-    transform block = walk transformInlines block
+    transform = walk transformInlines
 
     -- TODO: rewrite this using a fold
     transformInlines :: [P.Inline] -> [P.Inline]
@@ -78,7 +78,7 @@ pandocCompilerZk =
 
 -- Custom version of Hakyll's renderTagList.
 -- TODO: Maybe produce a Context here.
-renderTagList :: Tags -> Compiler (String)
+renderTagList :: Tags -> Compiler String
 renderTagList = renderTags makeLink concat
   where
     makeLink tag url count _minCount _maxCount =
