@@ -105,8 +105,7 @@ notesField name notes =
 
 config :: Configuration
 config = defaultConfiguration
-  { deployCommand = "rsync --delete-excluded --checksum --progress -av _site/ \
-                     \magnesium:/var/www/htdocs/notes.8pit.net/" }
+  { deployCommand = "./deploy.sh" }
 
 main :: IO ()
 main = hakyllWith config $ do

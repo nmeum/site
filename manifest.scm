@@ -3,6 +3,7 @@
              ((guix licenses) #:prefix license:)
              (guix gexp)
              (guix build-system haskell)
+             (gnu packages bash)
              (gnu packages commencement)
              (gnu packages haskell)
              (gnu packages haskell-apps)
@@ -100,6 +101,7 @@ Markdown or @acronym{RST, reStructuredText}.")
 
 (packages->manifest
   (list
+    bash-minimal
     chimerautils
     cabal-install
     gcc-toolchain
