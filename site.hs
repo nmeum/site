@@ -45,6 +45,24 @@ fixupNoteRefs = pure . fmap (withUrls go)
     let ext = takeExtension url
       in not (isExternal url) && (ext == "" || ext == ".md")
 
+-- Implements support for tags using Bear's multi-word tag syntax.
+--
+-- See:
+--   • https://github.com/zk-org/zk/blob/dev/docs/notes/tags.md>
+--   • https://github.com/zk-org/zk/blob/v0.15.1/internal/adapter/markdown/extensions/tag.go#L79
+inlineBearTags :: [P.Inline] -> [P.Inline]
+inlineBearTags = foldr go []
+  where
+    go i@(P.Str text) acc =
+      case T.uncons text of
+        -- TODO: Might be easier to just use a regex here.
+        Just ('#', xs) ->
+          let tag = T.takeWhile (/= '#') xs
+              rst = T.drop (T.length tag + 1) xs
+           in [linkToTag tag, P.Str rst] ++ acc
+        _ -> i : acc
+    go i acc = i : acc
+
 pandocCompilerZk :: Compiler (Item String)
 pandocCompilerZk =
   cached "pandocCompilerZk" $
@@ -54,25 +72,7 @@ pandocCompilerZk =
       (walk transform)
   where
     transform :: P.Block -> P.Block
-    transform = walk transformInlines
-
-    -- TODO: rewrite this using a fold
-    transformInlines :: [P.Inline] -> [P.Inline]
-    transformInlines (i@(P.Str text) : ix) =
-      -- Implements support for tags using Bear's multi-word tag syntax.
-      --
-      -- See:
-      --   • https://github.com/zk-org/zk/blob/dev/docs/notes/tags.md>
-      --   • https://github.com/zk-org/zk/blob/v0.15.1/internal/adapter/markdown/extensions/tag.go#L79
-      case T.uncons text of
-        -- TODO: Might be easier to just use a regex here.
-        Just ('#', xs) ->
-          let tag = T.takeWhile (/= '#') xs
-              rst = T.drop (T.length tag + 1) xs
-           in [linkToTag tag, P.Str rst] ++ transformInlines ix
-        _ -> i : transformInlines ix
-    transformInlines (i : ix) = i : transformInlines ix
-    transformInlines [] = []
+    transform = walk inlineBearTags
 
 ------------------------------------------------------------------------
 
