@@ -41,6 +41,7 @@ fixupNoteRefs = pure . fmap (withUrls go)
 
   -- Returns true if the URL is a reference to another zk note.
   isZkRef :: String -> Bool
+  isZkRef ('#' : _) = False
   isZkRef url =
     let ext = takeExtension url
       in not (isExternal url) && (ext == "" || ext == ".md")
