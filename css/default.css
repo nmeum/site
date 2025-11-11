@@ -19,8 +19,8 @@ a { text-decoration: none; }
 
 /* header and top bar */
 header a { color: inherit; }
-header h1 { background-color: var(--c-elem-bg); color: var(--c-elem-fg); border-bottom: 5px solid var(--c-elem-bd); font-weight: normal; padding: 0.25ex; font-size: 233%; }
-header h1 span { margin-left: 1em; font-size: 50%; font-style: italic; }
+header { background-color: var(--c-elem-bg); color: var(--c-elem-fg); border-bottom: 5px solid var(--c-elem-bd); padding: 0.25ex; font-size: 233%; }
+header span.headerSubTitle { margin-left: 1em; font-size: 50%; font-style: italic; }
 header a:hover { text-decoration: none; }
 
 /* sidebar */
