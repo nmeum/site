@@ -19,8 +19,8 @@ a { text-decoration: none; }
 
 /* header and top bar */
 header a { color: inherit; }
-header { background-color: var(--c-elem-bg); color: var(--c-elem-fg); border-bottom: 5px solid var(--c-elem-bd); padding: 0.25ex; font-size: 233%; }
-header span.headerSubTitle { margin-left: 1em; font-size: 50%; font-style: italic; }
+header { background-color: var(--c-elem-bg); color: var(--c-elem-fg); border-bottom: 5px solid var(--c-elem-bd); padding: 0.5ex; font-size: xx-large; }
+header span.headerSubTitle { margin-left: 1em; font-size: medium; font-style: italic; }
 header a:hover { text-decoration: none; }
 
 /* sidebar */
@@ -34,7 +34,7 @@ nav p { font-weight: bold; margin: 0 0 0.5em 2mm; padding: 1em 0 0 0; }
 
 /* main copy */
 .content { display: flex; flex-direction: row; flex-basis: 100%; }
-.metadata { font-style: italic; font-size: 90%; }
+.metadata { font-style: italic; font-size: small; }
 .metadata a, a.footnote-ref { text-decoration: none; }
 main a { text-decoration: underline; }
 main { flex-basis: 55%; padding: 0.5ex 0 2vh 1vw; }
@@ -45,7 +45,7 @@ main h6, main h7, main h8 { color: var(--c-elem-bg); font-weight: bold; margin: 
 main a { color: var(--c-high); }
 main a:hover { color: var(--c-high-light); }
 main hr { color: var(--c-line); }
-main section.footnotes { font-size: 75%; }
+main section.footnotes { font-size: smaller; }
 
 /* footer */
 footer { color: var(--c-elem-fg); background-color: var(--c-elem-bg); margin-top: auto; }
