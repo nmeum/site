@@ -47,6 +47,7 @@ main h6, main h7, main h8 { color: var(--c-elem-bg); font-weight: bold; margin: 
 main a { color: var(--c-high); }
 main a:hover { color: var(--c-high-light); }
 main hr { color: var(--c-line); }
+main blockquote { font-style: italic; padding-left: 1ex; border-left: 5px solid var(--c-line); }
 main section.footnotes { font-size: small; }
 
 /* footer */
