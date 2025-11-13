@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ViewPatterns #-}
 
+import Data.Maybe (fromJust)
 import Control.Monad (forM_)
 import qualified Data.Char as Char
 import qualified Data.Text as T
@@ -54,26 +55,26 @@ fixupNoteRefs = pure . fmap (withUrls go)
 --   • https://github.com/zk-org/zk/blob/v0.15.1/internal/adapter/markdown/extensions/tag.go#L79
 inlineBearTags :: [P.Inline] -> [P.Inline]
 inlineBearTags (i@(P.Str (T.stripPrefix "#" -> Just tagRst)) : ix) =
-  let tagText = takeTagText (P.Str tagRst : ix)
-      numElem = (length tagText) * 2 -- count P.Space seperators
-    in case takeUntilTag $ T.unwords tagText of
-         Just (txt, rst) ->
-           [linkToTag txt, P.Str rst] ++ (drop numElem ix)
-         _ -> i : inlineBearTags ix
+  case takeTagElems (P.Str tagRst : ix) of
+    Nothing -> i : inlineBearTags ix
+    Just el ->
+      let (txt, rst) = splitTag $ T.unwords el
+          numElement = (length el - 1) * 2 -- count P.Space too
+       in [linkToTag txt, P.Str rst] ++ (drop numElement ix)
   where
-    takeTagText :: [P.Inline] -> [T.Text]
-    takeTagText (P.Str str : xs)
-      | T.elem '#' str = [str] -- stop iterating on tag.
-      | otherwise = str : takeTagText xs
-    takeTagText (P.Space : xs) = takeTagText xs
-    takeTagText _ = [] -- stop iterating on non-string.
+    takeTagElems :: [P.Inline] -> Maybe [T.Text]
+    takeTagElems (P.Str str : xs)
+      | T.elem '#' str = Just [str]
+      | otherwise = (str :) <$> takeTagElems xs
+    takeTagElems (P.Space : xs) = takeTagElems xs
+    takeTagElems _ = Nothing
 
-    takeUntilTag :: T.Text -> Maybe (T.Text, T.Text)
-    takeUntilTag text =
-      (`splitAtDiscard` text) <$> T.findIndex (== '#') text
+    splitTag :: T.Text -> (T.Text, T.Text)
+    splitTag t = splitAtEx (fromJust $ T.findIndex (== '#') t) t
 
-    splitAtDiscard :: Int -> T.Text -> (T.Text, T.Text)
-    splitAtDiscard n t = let (b, a) = T.splitAt n t in (b, T.drop 1 a)
+    -- Like T.splitAt because exclude the seperator in 'snd'.
+    splitAtEx :: Int -> T.Text -> (T.Text, T.Text)
+    splitAtEx n t = let (b, a) = T.splitAt n t in (b, T.drop 1 a)
 inlineBearTags (i : ix) = i : inlineBearTags ix
 inlineBearTags [] = []
 
