@@ -58,9 +58,9 @@ inlineBearTags (i@(P.Str (T.stripPrefix "#" -> Just tagRst)) : ix) =
   case takeTagElems (P.Str tagRst : ix) of
     Nothing -> i : inlineBearTags ix
     Just el ->
-      let (txt, rst) = splitTag $ T.unwords el
+      let (tag, rst) = splitTag $ T.unwords el
           numElement = (length el - 1) * 2 -- count P.Space too
-       in [linkToTag txt, P.Str rst] ++ (drop numElement ix)
+       in [linkToTag tag, P.Str rst] ++ (drop numElement ix)
   where
     takeTagElems :: [P.Inline] -> Maybe [T.Text]
     takeTagElems (P.Str str : xs)
