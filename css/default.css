@@ -20,6 +20,7 @@ a { text-decoration: none; }
 /* header and top bar */
 header a { color: inherit; }
 header { background-color: var(--c-elem-bg); color: var(--c-elem-fg); border-bottom: 5px solid var(--c-elem-bd); padding: 0.5ex; font-size: xx-large; }
+header span.headerTitle { font-weight: bold; }
 header span.headerSubTitle { margin-left: 1em; font-size: medium; font-style: italic; }
 header a:hover { text-decoration: none; }
 
