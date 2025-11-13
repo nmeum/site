@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ViewPatterns #-}
 
 import Control.Monad (forM_)
 import qualified Data.Char as Char
@@ -52,17 +53,29 @@ fixupNoteRefs = pure . fmap (withUrls go)
 --   • https://github.com/zk-org/zk/blob/dev/docs/notes/tags.md>
 --   • https://github.com/zk-org/zk/blob/v0.15.1/internal/adapter/markdown/extensions/tag.go#L79
 inlineBearTags :: [P.Inline] -> [P.Inline]
-inlineBearTags = foldr go []
+inlineBearTags (i@(P.Str (T.stripPrefix "#" -> Just tagRst)) : ix) =
+  let tagText = takeTagText (P.Str tagRst : ix)
+      numElem = (length tagText) * 2 -- count P.Space seperators
+    in case takeUntilTag $ T.unwords tagText of
+         Just (txt, rst) ->
+           [linkToTag txt, P.Str rst] ++ (drop numElem ix)
+         _ -> i : inlineBearTags ix
   where
-    go i@(P.Str text) acc =
-      case T.uncons text of
-        -- TODO: Might be easier to just use a regex here.
-        Just ('#', xs) ->
-          let tag = T.takeWhile (/= '#') xs
-              rst = T.drop (T.length tag + 1) xs
-           in [linkToTag tag, P.Str rst] ++ acc
-        _ -> i : acc
-    go i acc = i : acc
+    takeTagText :: [P.Inline] -> [T.Text]
+    takeTagText (P.Str str : xs)
+      | T.elem '#' str = [str] -- stop iterating on tag.
+      | otherwise = str : takeTagText xs
+    takeTagText (P.Space : xs) = takeTagText xs
+    takeTagText _ = [] -- stop iterating on non-string.
+
+    takeUntilTag :: T.Text -> Maybe (T.Text, T.Text)
+    takeUntilTag text =
+      (`splitAtDiscard` text) <$> T.findIndex (== '#') text
+
+    splitAtDiscard :: Int -> T.Text -> (T.Text, T.Text)
+    splitAtDiscard n t = let (b, a) = T.splitAt n t in (b, T.drop 1 a)
+inlineBearTags (i : ix) = i : inlineBearTags ix
+inlineBearTags [] = []
 
 pandocCompilerZk :: Compiler (Item String)
 pandocCompilerZk =
