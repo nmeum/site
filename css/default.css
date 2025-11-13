@@ -4,6 +4,7 @@
 	--c-high-light: #b95ca6;
 	--c-line: #ddd;
 	--c-back: #fefefe;
+	--c-main: #333;
 
 	--c-elem-fg: white;
 	--c-elem-bg: #5e5184;
@@ -11,7 +12,7 @@
 }
 
 html, body { display: flex; flex-direction: column; height: 100%; }
-body { margin:0; padding: 0; background: var(--c-back); font-family: Helvetica, Verdana, Arial, 'Liberation Sans', FreeSans, sans-serif; }
+body { margin:0; padding: 0; color: var(--c-main); background: var(--c-back); font-family: Helvetica, Verdana, Arial, 'Liberation Sans', FreeSans, sans-serif; }
 h1, h2, h3, h4, h5, h6 { margin: 0; }
 pre { overflow: auto; }
 a { text-decoration: none; }
@@ -46,7 +47,7 @@ main h6, main h7, main h8 { color: var(--c-elem-bg); font-weight: bold; margin: 
 main a { color: var(--c-high); }
 main a:hover { color: var(--c-high-light); }
 main hr { color: var(--c-line); }
-main section.footnotes { font-size: smaller; }
+main section.footnotes { font-size: small; }
 
 /* footer */
 footer { color: var(--c-elem-fg); background-color: var(--c-elem-bg); margin-top: auto; }
