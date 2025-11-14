@@ -26,7 +26,7 @@ header span.headerSubTitle { margin-left: 1em; font-size: medium; font-style: it
 header a:hover { text-decoration: none; }
 
 /* sidebar */
-aside { border-right: 1px solid var(--c-line); padding: 0; min-width: 16em; }
+aside { border-right: 1px solid var(--c-line); padding: 0; min-width: 15em; }
 nav ul { list-style-type: none; padding-left: 0; }
 nav li ul { padding-left: 0.6em; }
 nav a:before { content: "› "; }
