@@ -2,10 +2,9 @@
 {-# LANGUAGE ViewPatterns #-}
 
 import Data.Maybe (fromJust)
-import Control.Monad (forM_)
 import qualified Data.Char as Char
 import qualified Data.Text as T
-import Hakyll hiding (renderTagList, tagsRules)
+import Hakyll hiding (renderTagList)
 import Hakyll.Core.Compiler.Internal (compilerTellDependencies)
 import Hakyll.Core.Dependencies
 import System.FilePath (replaceExtension, takeExtension)
@@ -19,10 +18,8 @@ import Text.Pandoc.Walk (walk)
 toLower :: String -> String
 toLower = fmap Char.toLower
 
-getMetadataItems :: [Identifier] -> Compiler [Item Metadata]
-getMetadataItems identifiers = do
-  mds <- mapM getMetadata identifiers
-  pure $ zipWith Item identifiers mds
+getMetadataItems :: Pattern -> Compiler [Item Metadata]
+getMetadataItems pattern = map (uncurry Item) <$> getAllMetadata pattern
 
 ------------------------------------------------------------------------
 
@@ -104,13 +101,6 @@ renderTagList = renderTags makeLink concat
           ! A.title ("Navigate posts by tag '" <> H.stringValue tag <> "'")
         $ H.toHtml (tag ++ " (" ++ show count ++ ")")
 
--- Custom variant of tagsRules which doesn't introduce any dependencies.
-tagsRules :: Tags -> (String -> [Identifier] -> Rules ()) -> Rules ()
-tagsRules tags rules =
-  forM_ (tagsMap tags) $ \(tag, identifiers) ->
-    create [tagsMakeId tags tag] $
-      rules tag identifiers
-
 ------------------------------------------------------------------------
 
 notesField :: String -> [Item a] -> Context b
@@ -165,13 +155,13 @@ main = hakyllWith config $ do
           >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
           >>= relativizeUrls
 
-    tagsRules tags $ \tagStr tagIds -> do
+    tagsRules tags $ \tagStr tagsPattern -> do
       route idRoute
       compile $ do
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
         let pageTitle = constField "title" tagStr
 
-        notes <- getMetadataItems tagIds >>= recentFirst
+        notes <- getMetadataItems tagsPattern >>= recentFirst
         let baseCtx = pageTitle <> sidebar <> defaultContext
             listCtx = pageTitle
                 <> notesField "notes" notes
