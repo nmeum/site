@@ -10,7 +10,7 @@ By day, I work as a computer science researcher, head to my [work homepage] for 
 
 In the spirit of a [digital garden], this site contains [selected notes][evergreen notes] of varying detail and quality.
 They are loosely categorized using tag keywords and often cross-reference each other.
-The site is generated from a [zk notebook][zk github] using [Hakyll], more information is [available separately](notes/c0p9).
+The site is generated from a [zk notebook][zk] using [Hakyll], more information is [available separately](notes/c0p9).
 Topicwise, the majority of notes concern themselves with all matters related to computing.
 This includes—among other things—programs I have written, software I use, and configuration files for that software.
 
@@ -20,7 +20,7 @@ This includes—among other things—programs I have written, software I use, an
 [git.8pit.net]: https://git.8pit.net {rel=me}
 [GitHub]: https://github.com/nmeum {rel=me}
 [work homepage]: https://soeren-tempel.net/ {rel=me}
-[zk github]: https://github.com/zk-org/zk
+[zk]: https://zk-org.github.io/zk
 [Hakyll]: http://jaspervdj.be/hakyll
 [evergreen notes]: https://notes.andymatuschak.org/Evergreen_notes
 [digital garden]: https://github.com/MaggieAppleton/digital-gardeners#readme
