@@ -131,6 +131,9 @@ main = hakyllWith config $ do
       deps <- makePatternDependency KindMetadata (fromGlob "notes/*")
       compile $ do
         -- XXX: renderTagList/renderTags does not tell dependencies itself.
+        -- It cannot do so properly as it does not receive a 'Pattern' and
+        -- can thus not express the need for rebuilds on newly added pages.
+        --
         -- https://github.com/jaspervdj/hakyll/blob/v4.16.7.1/lib/Hakyll/Web/Tags.hs#L183
         compilerTellDependencies [deps]
 
