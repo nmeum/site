@@ -11,6 +11,17 @@
 	--c-elem-bd: #453b61;
 }
 
+@media (prefers-color-scheme: dark) {
+	:root {
+		--c-high: #eb82dc;
+		--c-back: #333;
+		--c-main: #fefefe;
+		--c-line: #aaa;
+	}
+
+	main, aside { --c-elem-bg: #bca2ff; } /* filter: brightness(2.0) */
+}
+
 html, body { display: flex; flex-direction: column; height: 100%; }
 body { margin:0; padding: 0; color: var(--c-main); background: var(--c-back); font-family: Helvetica, Verdana, Arial, 'Liberation Sans', FreeSans, sans-serif; }
 h1, h2, h3, h4, h5, h6 { margin: 0; }
