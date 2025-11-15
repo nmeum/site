@@ -18,9 +18,6 @@ import Text.Pandoc.Walk (walk)
 toLower :: String -> String
 toLower = fmap Char.toLower
 
-getMetadataItems :: Pattern -> Compiler [Item Metadata]
-getMetadataItems pattern = map (uncurry Item) <$> getAllMetadata pattern
-
 ------------------------------------------------------------------------
 
 linkToTag :: T.Text -> P.Inline
@@ -88,6 +85,9 @@ pandocCompilerZk =
 
 ------------------------------------------------------------------------
 
+getMetadataItems :: Pattern -> Compiler [Item Metadata]
+getMetadataItems pattern = map (uncurry Item) <$> getAllMetadata pattern
+
 -- Custom version of Hakyll's renderTagList.
 -- TODO: Maybe produce a Context here.
 renderTagList :: Tags -> Compiler String
@@ -102,11 +102,6 @@ renderTagList = renderTags makeLink concat
         $ H.toHtml (tag ++ " (" ++ show count ++ ")")
 
 ------------------------------------------------------------------------
-
-notesField :: String -> [Item a] -> Context b
-notesField name notes =
-  listField name (dateCtx <> urlField "url" <> metadataField) (pure notes)
-    <> titleField "title"
 
 config :: Configuration
 config = defaultConfiguration
@@ -134,11 +129,17 @@ main = hakyllWith config $ do
         makeItem []
           >>= loadAndApplyTemplate "templates/sidebar.html" allTagsCtx
 
-    match "index.html" $ do
-      route idRoute
+    match "index.md" $ do
+      route $ setExtension "html"
       compile $ do
+        notes   <- getMetadataItems (fromGlob "notes/*") >>= recentFirst
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
-        getResourceBody
+
+        pandocCompilerZk
+            >>= loadAndApplyTemplate
+                    "templates/index.html"
+                    (notesField "notes" (take 5 notes) <> defaultContext)
+            >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
             >>= relativizeUrls
 
@@ -184,3 +185,8 @@ dateCtx =
 
 noteCtx :: Context String
 noteCtx = dateCtx <> defaultContext
+
+notesField :: String -> [Item a] -> Context b
+notesField name notes =
+  listField name (dateCtx <> urlField "url" <> metadataField) (pure notes)
+    <> titleField "title"

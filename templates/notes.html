@@ -1,8 +1,2 @@
 <h1 class="tag">Tag: $title$</h1>
-<ul>
-	$for(notes)$
-		<li>
-			<a href="$url$">$title$</a> - <time datetime="$datetime$">$date$</time>
-		</li>
-	$endfor$
-</ul>
+$partial("templates/note-list.html")$
