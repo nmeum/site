@@ -2,5 +2,5 @@ packages: *.cabal
 
 source-repository-package
     type: git
-    location: https://github.com/jaspervdj/hakyll
-    tag: 677d24b23b1d5a8d2e75eb509b1cd9e7f0b6d9b8
+    location: https://github.com/nmeum/hakyll
+    tag: cd2f95f32426bfb30cc9ecc71f7898e53c1ef962

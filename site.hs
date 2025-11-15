@@ -2,10 +2,9 @@
 {-# LANGUAGE ViewPatterns #-}
 
 import Data.Maybe (fromJust)
-import Control.Monad (forM_)
 import qualified Data.Char as Char
 import qualified Data.Text as T
-import Hakyll hiding (renderTagList, tagsRules)
+import Hakyll hiding (renderTagList)
 import Hakyll.Core.Compiler.Internal (compilerTellDependencies)
 import Hakyll.Core.Dependencies
 import System.FilePath (replaceExtension, takeExtension)
@@ -14,15 +13,11 @@ import Text.Blaze.Html.Renderer.String (renderHtml)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Pandoc as P
+import Text.Pandoc.Highlighting (Style, haddock, styleToCss)
 import Text.Pandoc.Walk (walk)
 
 toLower :: String -> String
 toLower = fmap Char.toLower
-
-getMetadataItems :: [Identifier] -> Compiler [Item Metadata]
-getMetadataItems identifiers = do
-  mds <- mapM getMetadata identifiers
-  pure $ zipWith Item identifiers mds
 
 ------------------------------------------------------------------------
 
@@ -78,18 +73,29 @@ inlineBearTags (i@(P.Str (T.stripPrefix "#" -> Just tagRst)) : ix) =
 inlineBearTags (i : ix) = i : inlineBearTags ix
 inlineBearTags [] = []
 
+pandocCodeStyle :: Style
+pandocCodeStyle = haddock
+
 pandocCompilerZk :: Compiler (Item String)
 pandocCompilerZk =
   cached "pandocCompilerZk" $
-    pandocCompilerWithTransform
-      defaultHakyllReaderOptions
-      defaultHakyllWriterOptions
-      (walk transform)
+    (pandocCompilerZk' >>= fixupNoteRefs)
   where
+    pandocCompilerZk' :: Compiler (Item String)
+    pandocCompilerZk' =
+      pandocCompilerWithTransform
+       defaultHakyllReaderOptions
+       defaultHakyllWriterOptions
+         { P.writerHighlightStyle = Just pandocCodeStyle }
+       (walk transform)
+
     transform :: P.Block -> P.Block
     transform = walk inlineBearTags
 
 ------------------------------------------------------------------------
+
+getMetadataItems :: Pattern -> Compiler [Item Metadata]
+getMetadataItems pattern = map (uncurry Item) <$> getAllMetadata pattern
 
 -- Custom version of Hakyll's renderTagList.
 -- TODO: Maybe produce a Context here.
@@ -104,19 +110,7 @@ renderTagList = renderTags makeLink concat
           ! A.title ("Navigate posts by tag '" <> H.stringValue tag <> "'")
         $ H.toHtml (tag ++ " (" ++ show count ++ ")")
 
--- Custom variant of tagsRules which doesn't introduce any dependencies.
-tagsRules :: Tags -> (String -> [Identifier] -> Rules ()) -> Rules ()
-tagsRules tags rules =
-  forM_ (tagsMap tags) $ \(tag, identifiers) ->
-    create [tagsMakeId tags tag] $
-      rules tag identifiers
-
 ------------------------------------------------------------------------
-
-notesField :: String -> [Item a] -> Context b
-notesField name notes =
-  listField name (dateCtx <> urlField "url" <> metadataField) (pure notes)
-    <> titleField "title"
 
 config :: Configuration
 config = defaultConfiguration
@@ -131,12 +125,19 @@ main = hakyllWith config $ do
     match "css/*" $ do
         route   idRoute
         compile compressCssCompiler
+    create ["css/syntax.css"] $ do
+        route idRoute
+        compile $
+          makeItem $ (compressCss $ styleToCss pandocCodeStyle)
 
     tags <- buildTags "notes/*" (fromCapture "tags/*.html" . toLower)
     create ["sidebar"] $ do
       deps <- makePatternDependency KindMetadata (fromGlob "notes/*")
       compile $ do
         -- XXX: renderTagList/renderTags does not tell dependencies itself.
+        -- It cannot do so properly as it does not receive a 'Pattern' and
+        -- can thus not express the need for rebuilds on newly added pages.
+        --
         -- https://github.com/jaspervdj/hakyll/blob/v4.16.7.1/lib/Hakyll/Web/Tags.hs#L183
         compilerTellDependencies [deps]
 
@@ -144,11 +145,17 @@ main = hakyllWith config $ do
         makeItem []
           >>= loadAndApplyTemplate "templates/sidebar.html" allTagsCtx
 
-    match "index.html" $ do
-      route idRoute
+    match "index.md" $ do
+      route $ setExtension "html"
       compile $ do
+        notes   <- getMetadataItems (fromGlob "notes/*") >>= recentFirst
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
-        getResourceBody
+
+        pandocCompilerZk
+            >>= loadAndApplyTemplate
+                    "templates/index.html"
+                    (notesField "notes" (take 5 notes) <> defaultContext)
+            >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
             >>= relativizeUrls
 
@@ -159,19 +166,18 @@ main = hakyllWith config $ do
         let postTags = tagsField "tags" tags
 
         pandocCompilerZk
-          >>= fixupNoteRefs
           >>= loadAndApplyTemplate "templates/note.html" (postTags <> noteCtx)
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
           >>= relativizeUrls
 
-    tagsRules tags $ \tagStr tagIds -> do
+    tagsRules tags $ \tagStr tagsPattern -> do
       route idRoute
       compile $ do
         sidebar <- constField "sidebar" <$> loadBody "sidebar"
         let pageTitle = constField "title" tagStr
 
-        notes <- getMetadataItems tagIds >>= recentFirst
+        notes <- getMetadataItems tagsPattern >>= recentFirst
         let baseCtx = pageTitle <> sidebar <> defaultContext
             listCtx = pageTitle
                 <> notesField "notes" notes
@@ -194,3 +200,8 @@ dateCtx =
 
 noteCtx :: Context String
 noteCtx = dateCtx <> defaultContext
+
+notesField :: String -> [Item a] -> Context b
+notesField name notes =
+  listField name (dateCtx <> urlField "url" <> metadataField) (pure notes)
+    <> titleField "title"
