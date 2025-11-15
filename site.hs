@@ -118,10 +118,6 @@ config = defaultConfiguration
 
 main :: IO ()
 main = hakyllWith config $ do
-    match "images/*" $ do
-        route   idRoute
-        compile copyFileCompiler
-
     match "css/*" $ do
         route   idRoute
         compile compressCssCompiler
