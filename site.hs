@@ -13,6 +13,7 @@ import Text.Blaze.Html.Renderer.String (renderHtml)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Pandoc as P
+import Text.Pandoc.Highlighting (Style, haddock, styleToCss)
 import Text.Pandoc.Walk (walk)
 
 toLower :: String -> String
@@ -72,12 +73,16 @@ inlineBearTags (i@(P.Str (T.stripPrefix "#" -> Just tagRst)) : ix) =
 inlineBearTags (i : ix) = i : inlineBearTags ix
 inlineBearTags [] = []
 
+pandocCodeStyle :: Style
+pandocCodeStyle = haddock
+
 pandocCompilerZk :: Compiler (Item String)
 pandocCompilerZk =
   cached "pandocCompilerZk" $
     pandocCompilerWithTransform
       defaultHakyllReaderOptions
       defaultHakyllWriterOptions
+        { P.writerHighlightStyle = Just pandocCodeStyle }
       (walk transform)
   where
     transform :: P.Block -> P.Block
@@ -116,6 +121,10 @@ main = hakyllWith config $ do
     match "css/*" $ do
         route   idRoute
         compile compressCssCompiler
+    create ["css/syntax.css"] $ do
+        route idRoute
+        compile $
+          makeItem $ styleToCss pandocCodeStyle
 
     tags <- buildTags "notes/*" (fromCapture "tags/*.html" . toLower)
     create ["sidebar"] $ do
