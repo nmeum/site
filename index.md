@@ -9,7 +9,8 @@ I also run a Git server where I host my own [hobby projects][git.8pit.net] (mirr
 By day, I work as a computer science researcher, head to my [work homepage] for more information on that.
 
 This site contains notes from my [zk notebook][zk github].
-The notes are loosely categorized using tag keywords and often cross-reference each other in a [zettelkasten-like fashion][zettelkasten wikipedia].
+The notes are loosely categorized using tag keywords and often cross-reference each other.
+They may (or may not) be continuously updated.
 With regard to their topic, the majority of notes concern themselves with all matters related to computing.
 This includes—among other things—programs I have written, software I use, and configuration files for that software.
 
@@ -20,4 +21,3 @@ This includes—among other things—programs I have written, software I use, an
 [GitHub]: https://github.com/nmeum {rel=me}
 [work homepage]: https://soeren-tempel.net/ {rel=me}
 [zk github]: https://github.com/zk-org/zk
-[zettelkasten wikipedia]: https://en.wikipedia.org/wiki/Zettelkasten#Use_in_personal_knowledge_management
