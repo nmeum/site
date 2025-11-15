@@ -124,7 +124,7 @@ main = hakyllWith config $ do
     create ["css/syntax.css"] $ do
         route idRoute
         compile $
-          makeItem $ styleToCss pandocCodeStyle
+          makeItem $ (compressCss $ styleToCss pandocCodeStyle)
 
     tags <- buildTags "notes/*" (fromCapture "tags/*.html" . toLower)
     create ["sidebar"] $ do
