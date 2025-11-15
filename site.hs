@@ -79,12 +79,16 @@ pandocCodeStyle = haddock
 pandocCompilerZk :: Compiler (Item String)
 pandocCompilerZk =
   cached "pandocCompilerZk" $
-    pandocCompilerWithTransform
-      defaultHakyllReaderOptions
-      defaultHakyllWriterOptions
-        { P.writerHighlightStyle = Just pandocCodeStyle }
-      (walk transform)
+    (pandocCompilerZk' >>= fixupNoteRefs)
   where
+    pandocCompilerZk' :: Compiler (Item String)
+    pandocCompilerZk' =
+      pandocCompilerWithTransform
+       defaultHakyllReaderOptions
+       defaultHakyllWriterOptions
+         { P.writerHighlightStyle = Just pandocCodeStyle }
+       (walk transform)
+
     transform :: P.Block -> P.Block
     transform = walk inlineBearTags
 
@@ -162,7 +166,6 @@ main = hakyllWith config $ do
         let postTags = tagsField "tags" tags
 
         pandocCompilerZk
-          >>= fixupNoteRefs
           >>= loadAndApplyTemplate "templates/note.html" (postTags <> noteCtx)
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
