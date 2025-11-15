@@ -7,7 +7,7 @@
 	--c-main: #333;
 
 	--c-elem-fg: white;
-	--c-elem-bg: #5e5184;
+	--c-elem-bg: #5e5184; /* sync with theme-color <meta> */
 	--c-elem-bd: #453b61;
 }
 
