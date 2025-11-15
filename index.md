@@ -10,8 +10,8 @@ By day, I work as a computer science researcher, head to my [work homepage] for 
 
 This site contains [selected notes][evergreen notes] of varying detail and quality.
 They are loosely categorized using tag keywords and often cross-reference each other.
-The site is generated from a [zk notebook][zk github] using [Hakyll], more information about the setup is [available separately](https://).
-The majority of notes concern themselves with all matters related to computing.
+The site is generated from a [zk notebook][zk github] using [Hakyll], more information about the setup is [available separately](notes/c0p9).
+Topicwise, the majority of notes concern themselves with all matters related to computing.
 This includes—among other things—programs I have written, software I use, and configuration files for that software.
 
 [mastodon]: https://chaos.social/@nmeum {rel=me}
