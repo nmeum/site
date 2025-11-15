@@ -6,7 +6,7 @@
 	--c-back: #fefefe;
 	--c-main: #333;
 
-	--c-elem-fg: white;
+	--c-elem-fg: #fefefe; /* --c-back */
 	--c-elem-bg: #5e5184; /* sync with theme-color <meta> */
 	--c-elem-bd: #453b61;
 }
@@ -19,7 +19,11 @@
 		--c-line: #aaa;
 	}
 
-	main, aside { --c-elem-bg: #bca2ff; } /* filter: brightness(2.0) */
+	/* filter: brightness(2.0) */
+	main, aside {
+		--c-elem-fg: #333;
+		--c-elem-bg: #bca2ff;
+	}
 }
 
 html, body { display: flex; flex-direction: column; height: 100%; }
