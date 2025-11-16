@@ -28,6 +28,8 @@ linkToTag name =
     in P.Link ("", [], []) [P.Str name] (file, desc)
 
 -- Transform zk references to .md files to .html files.
+--
+-- TODO: Filter out references to private notes.
 fixupNoteRefs :: Item String -> Compiler (Item String)
 fixupNoteRefs = pure . fmap (withUrls go)
  where
