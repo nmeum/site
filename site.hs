@@ -87,6 +87,7 @@ pandocCompilerZk =
     pandocCompilerZk' =
       pandocCompilerWithTransform
        defaultHakyllReaderOptions
+         { P.readerStripComments = True }
        defaultHakyllWriterOptions
          { P.writerHighlightStyle = Just pandocCodeStyle }
        (walk transform)
