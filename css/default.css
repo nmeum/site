@@ -11,6 +11,7 @@
 	--c-elem-bd: #453b61;
 }
 
+/* dark theme */
 @media (prefers-color-scheme: dark) {
 	:root {
 		--c-high: #eb82dc;
@@ -26,10 +27,13 @@
 	}
 }
 
+/* general */
 html, body { display: flex; flex-direction: column; height: 100%; }
 body { margin:0; padding: 0; color: var(--c-main); background: var(--c-back); font-family: Helvetica, Verdana, Arial, 'Liberation Sans', FreeSans, sans-serif; }
 h1, h2, h3, h4, h5, h6 { margin: 0; }
 pre { overflow: auto; }
+hr { color: var(--c-line); }
+blockquote { font-style: italic; padding-left: 1ex; border-left: 5px solid var(--c-line); }
 a { text-decoration: none; }
 .tag { text-transform: capitalize; }
 
@@ -61,8 +65,6 @@ main h3, main h4, main h5 { color: var(--c-elem-bg); font-weight: bold; margin: 
 main h6, main h7, main h8 { color: var(--c-elem-bg); font-weight: bold; margin: 2em 0 0 0; }
 main a { color: var(--c-high); }
 main a:hover { color: var(--c-high-light); }
-main hr { color: var(--c-line); }
-main blockquote { font-style: italic; padding-left: 1ex; border-left: 5px solid var(--c-line); }
 main section.footnotes { font-size: small; }
 
 /* footer */
@@ -71,6 +73,7 @@ footer a { color: inherit; }
 footer a:hover { text-decoration: underline; }
 footer div { padding: 1em; }
 
+/* responsive design */
 @media (max-width: 800px) {
 	aside { border-top: 1px solid var(--c-line); order: 1; margin-top: auto; }
 	footer { margin-top: 0; }
