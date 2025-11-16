@@ -30,6 +30,7 @@ linkToTag name =
 -- Transform zk references to .md files to .html files.
 --
 -- TODO: Filter out references to private notes.
+-- TODO: Support note references with anchors (e.g., for referencing a section).
 fixupNoteRefs :: Item String -> Compiler (Item String)
 fixupNoteRefs = pure . fmap (withUrls go)
  where
