@@ -174,14 +174,12 @@ main = hakyllWith config $ do
     tagsRules tags $ \tagStr tagsPattern -> do
       route idRoute
       compile $ do
-        sidebar <- constField "sidebar" <$> loadBody "sidebar"
-        let pageTitle = constField "title" tagStr
-
+        aside <- constField "sidebar" <$> loadBody "sidebar"
         notes <- getMetadataItems tagsPattern >>= recentFirst
-        let baseCtx = pageTitle <> sidebar <> defaultContext
-            listCtx = pageTitle
-                <> notesField "notes" notes
-                <> defaultContext
+
+        let title   = constField "title" tagStr
+            baseCtx = title <> aside <> defaultContext
+            listCtx = title <> notesField "notes" notes
 
         makeItem []
           >>= loadAndApplyTemplate "templates/notes.html" listCtx
@@ -201,7 +199,7 @@ dateCtx =
 noteCtx :: Context String
 noteCtx = dateCtx <> defaultContext
 
-notesField :: String -> [Item a] -> Context b
+notesField :: String -> [Item Metadata] -> Context String
 notesField name notes =
-  listField name (dateCtx <> urlField "url" <> metadataField) (pure notes)
-    <> titleField "title"
+  let fields = dateCtx <> urlField "url" <> metadataField
+   in listField name fields (pure notes)
