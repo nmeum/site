@@ -4,6 +4,8 @@ A website generated from my [zk notebook].
 
 ## Usage
 
+**Note:** Usage via Guix is currently broken, waiting for next Hakyll release.
+
 Invoke using [Guix] as follows:
 
 	$ guix time-machine -C channels.scm -- shell -CN --expose=~/doc/zk-notebook
