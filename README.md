@@ -1,6 +1,6 @@
 # notes
 
-A website generated from my [zk notebook].
+A [website] generated from my [zk notebook].
 
 ## Usage
 
@@ -13,5 +13,6 @@ Invoke using [Guix] as follows:
 
 Important to run this in a container, otherwise it messes with the host's Cabal config.
 
+[website]: https://notes.8pit.net
 [zk notebook]: https://github.com/zk-org/zk
 [Guix]: https://guix.gnu.org
