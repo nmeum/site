@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE CPP #-}
 
 import Data.Maybe (fromJust)
 import qualified Data.Char as Char
@@ -90,7 +91,11 @@ pandocCompilerZk =
        defaultHakyllReaderOptions
          { P.readerStripComments = True }
        defaultHakyllWriterOptions
+#if MIN_VERSION_pandoc(3,8,0)
+         { P.writerHighlightMethod = P.Skylighting pandocCodeStyle }
+#else
          { P.writerHighlightStyle = Just pandocCodeStyle }
+#endif
        (walk transform)
 
     transform :: P.Block -> P.Block
