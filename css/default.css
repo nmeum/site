@@ -36,6 +36,7 @@ hr { color: var(--c-line); }
 blockquote { font-style: italic; padding-left: 1ex; border-left: 5px solid var(--c-line); }
 a { text-decoration: none; }
 .tag { text-transform: capitalize; }
+sup { vertical-align: 0; position: relative; bottom: 0.6ex; }
 
 /* header and top bar */
 header a { color: inherit; }
