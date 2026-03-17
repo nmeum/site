@@ -1,6 +1,0 @@
-packages: *.cabal
-
-source-repository-package
-    type: git
-    location: https://github.com/jaspervdj/hakyll
-    tag: 35a82b1ae93adcd509686ee67b666f9e6bd28757

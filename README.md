@@ -2,9 +2,9 @@
 
 A [website] generated from my [zk notebook].
 
-## Usage
+More information about the setup: <https://notes.8pit.net/notes/c0p9.html>.
 
-**Note:** Usage via Guix is currently broken, waiting for next Hakyll release.
+## Usage
 
 Invoke using [Guix] as follows:
 
