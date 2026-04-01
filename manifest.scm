@@ -2,6 +2,7 @@
              (guix build-system haskell)
              (guix git-download)
              (gnu packages commencement)
+             (gnu packages entr)
              (gnu packages haskell)
              (gnu packages haskell-apps)
              (gnu packages haskell-xyz)
@@ -32,4 +33,5 @@
     cabal-install
     gcc-toolchain ;required by cabal.
     ghc
-    ghc-hakyll-latest))
+    ghc-hakyll-latest
+    entr))
