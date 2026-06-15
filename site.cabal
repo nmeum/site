@@ -2,7 +2,7 @@ cabal-version:      3.4
 name:               site
 version:            0.1.0.0
 license:            CC-BY-NC-SA-4.0
-license-file:       LICENSE
+license-file:       LICENSE.txt
 build-type:         Simple
 
 executable site
