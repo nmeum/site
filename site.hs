@@ -164,6 +164,10 @@ main = hakyllWith config $ do
             >>= loadAndApplyTemplate "templates/default.html" (sidebar <> noteCtx)
             >>= relativizeUrls
 
+    match "notes/img/*" $ do
+      route idRoute
+      compile copyFileCompiler
+
     match "notes/*" $ do
       route $ setExtension "html"
       compile $ do
