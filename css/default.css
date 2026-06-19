@@ -37,6 +37,7 @@ blockquote { font-style: italic; padding-left: 1ex; border-left: 5px solid var(-
 a { text-decoration: none; }
 .tag { text-transform: capitalize; }
 sup { vertical-align: 0; position: relative; bottom: 0.6ex; }
+img { max-width: 100%; max-height: 100%; }
 
 /* header and top bar */
 header a { color: inherit; }
