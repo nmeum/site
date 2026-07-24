@@ -2,10 +2,12 @@
              (guix build-system haskell)
              (guix git-download)
              (gnu packages commencement)
+             (gnu packages curl)
              (gnu packages entr)
              (gnu packages haskell)
              (gnu packages haskell-apps)
              (gnu packages haskell-xyz)
+             (gnu packages nss)
              (gnu packages linux))
 
 ;; XXX: build ghc-hakyll from Git until changes required for metadata-only
@@ -29,9 +31,11 @@
 
 (packages->manifest
   (list
-    chimerautils
     cabal-install
+    chimerautils
+    curl ;needed by cabal for https:// URLs.
     gcc-toolchain ;required by cabal.
     ghc
+    nss-certs ;needed by curl for TLS support.
     ghc-hakyll-latest
     entr))
