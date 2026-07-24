@@ -6,5 +6,5 @@ set -e -x
 #
 # See: https://github.com/jaspervdj/hakyll/issues/502
 
-ls index.md css/* templates/* notes/* | \
+find index.md css templates/ notes/ -type f | \
 	entr cabal run site -- build
