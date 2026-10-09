@@ -8,7 +8,7 @@ build-type:         Simple
 executable site
   main-is:          site.hs
   build-depends:    base == 4.*
-                  , hakyll == 4.16.*
+                  , hakyll
                   , blaze-html
                   , blaze-markup
                   , binary
